@@ -14,6 +14,32 @@ router.get('/', (req, res, next) => {
   
 });
 
+
+router.post('/', async (req, res, next) => {
+
+  const usuario = req.body.usuario
+  const senha = req.body.senha
+  const permicao = req.body.perm
+
+  const salt = await bcrypt.genSalt(12)
+  const hashsenha = await bcrypt.hash(senha, salt)
+  
+  new User({
+    user:usuario,
+    pass:hashsenha,
+    perm:permicao
+  }).save().then(() => {
+    res.json({
+      msg:'USUARIO CRIADO COM SUCESSO!'
+    })
+  }).catch(() => {
+    res.json({
+      msg:'ERRO AO CRIA USUARIO!'
+    })
+  })
+  
+})
+
 router.post('/login', async (req, res, next) => {
 
   const user = req.body.usuario
@@ -43,31 +69,6 @@ router.post('/login', async (req, res, next) => {
   }
 
 });
-
-router.post('/', async (req, res, next) => {
-
-  const usuario = req.body.usuario
-  const senha = req.body.senha
-  const permicao = req.body.perm
-
-  const salt = await bcrypt.genSalt(12)
-  const hashsenha = await bcrypt.hash(senha, salt)
-  
-  new User({
-    user:usuario,
-    pass:hashsenha,
-    perm:permicao
-  }).save().then(() => {
-    res.json({
-      msg:'USUARIO CRIADO COM SUCESSO!'
-    })
-  }).catch(() => {
-    res.json({
-      msg:'ERRO AO CRIA USUARIO!'
-    })
-  })
-  
-})
 
 
 
